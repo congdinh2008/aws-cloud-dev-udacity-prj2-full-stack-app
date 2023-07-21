@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
+import { deleteLocalFiles, filterImageFromURL, validateURL } from "./helpers/util";
 
 dotenv.config();
 
@@ -24,6 +25,20 @@ app.get("/", (req: Request, res: Response) => {
 // RETURNS
 //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 /**************************************************************************** */
+
+app.get("/filteredimage", async (req: Request, res: Response) => {
+  const image_url: any = req.query.image_url;
+  if (typeof image_url == "undefined" || !validateURL(image_url)) {
+    return res
+      .status(422)
+      .send({ message: "Unable to process the requested image url." });
+  }
+  const filteredpath: string = await filterImageFromURL(image_url);
+
+  return res.status(200).sendFile(filteredpath, async () => {
+    await deleteLocalFiles([filteredpath]);
+  });
+});
 
 //! END @TODO1
 

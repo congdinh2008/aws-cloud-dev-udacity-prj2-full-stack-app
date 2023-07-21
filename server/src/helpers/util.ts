@@ -37,3 +37,16 @@ export async function deleteLocalFiles(files: Array<string>): Promise<void> {
     fs.unlinkSync(file);
   }
 }
+
+// validateURL
+// helper function to validate an url
+// INPUT
+//     inputURL: a url string to validate
+export function validateURL(inputURL: string): boolean {
+  try {
+    const url = new URL(inputURL);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch (_) {
+    return false;
+  }
+}
